@@ -22,8 +22,32 @@ pub struct Initialize<'info> {
         mint::decimals = 6,
         mint::authority = config, // since config is a pda, the address is it key, 
     )]
+    // docs: https://www.anchor-lang.com/docs/tokens/basics/create-mint#account-types
     pub reward_mint: InterfaceAccount<'info, Mint>,
 
     pub system_program: Program<'info, System>,
     pub token_program: Interface<'info, TokenInterface>,
+}
+
+
+impl<'info> Initialize<'info> {
+    pub fn init(&mut self, max_amount: u64, max_duration: u64, bumps: &InitializeBumps) -> Result<()> {
+        let fee = self.calculate_fee(max_amount, max_duration);
+
+        self.config.set_inner( Config {
+            owner: self.admin.key(),
+            max_duration,
+            max_amount,
+            fee,
+            reward_mint: self.reward_mint.key(),
+            bump: bumps.config,
+        });
+
+        msg!("Config Initialized: {:?}", self.config);
+        Ok(())
+    }
+
+    fn calculate_fee(&self, _max_amount: u64, _max_duration: u64) -> u16 {
+        10
+    }
 }
