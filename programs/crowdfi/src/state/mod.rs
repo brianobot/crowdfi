@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[account]
-#[derive(InitSpace)]
+#[derive(InitSpace, Debug)]
 pub struct Config {
     pub owner: Pubkey, // the admin behind the config
     pub max_duration: u64, // the max duration campaigns under this config should run
