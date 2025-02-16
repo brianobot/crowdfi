@@ -32,14 +32,15 @@ pub struct Initialize<'info> {
 
 
 impl<'info> Initialize<'info> {
-    pub fn init(&mut self, max_amount: u64, max_duration: u64, bumps: &InitializeBumps) -> Result<()> {
+    pub fn init(&mut self, seed: u8, max_amount: u64, max_duration: u64, bumps: &InitializeBumps) -> Result<()> {
         let fee = self.calculate_fee(max_amount, max_duration);
 
         self.config.set_inner( Config {
-            owner: self.admin.key(),
+            admin: self.admin.key(),
             max_duration,
             max_amount,
             fee,
+            seed,
             reward_mint: self.reward_mint.key(),
             bump: bumps.config,
         });
