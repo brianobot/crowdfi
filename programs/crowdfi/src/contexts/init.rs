@@ -5,6 +5,7 @@ use crate::state::Config;
 
 
 #[derive(Accounts)]
+#[instruction(seed: u8)]
 pub struct Initialize<'info> {
     #[account(mut)] // needed because balance would be deducted from the account
     pub admin: Signer<'info>,
@@ -12,7 +13,7 @@ pub struct Initialize<'info> {
         init,
         payer = admin,
         space = 8 + Config::INIT_SPACE,
-        seeds = [b"config", admin.key().as_ref()],
+        seeds = [b"config", admin.key().as_ref(), seed.to_le_bytes().as_ref()],
         bump
     )]
     pub config: Account<'info, Config>,
