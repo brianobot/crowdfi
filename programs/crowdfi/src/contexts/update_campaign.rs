@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 
 use crate::state::{Campaign, Config};
 use crate::constant::{
-    ANCHOR_DISCRIMINATION,
+    ANCHOR_DISCRIMINATOR,
     MAX_CAMPAIGN_DESCR,
     MAX_CAMPAIGN_URL,
 };
@@ -26,7 +26,7 @@ pub struct UpdateCampaign<'info> {
     pub config: Account<'info, Config>,
     #[account(
         mut,
-        realloc = ANCHOR_DISCRIMINATION + Campaign::INIT_SPACE + campaign.title.len() + campaign.description.len() + campaign.url.len(),
+        realloc = ANCHOR_DISCRIMINATOR + Campaign::INIT_SPACE + campaign.title.len() + campaign.description.len() + campaign.url.len(),
         realloc::payer = user,
         realloc::zero = false,
         seeds = [b"campaign", user.key().as_ref(), campaign.title.as_bytes()],
