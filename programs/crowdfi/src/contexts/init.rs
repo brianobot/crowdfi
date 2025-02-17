@@ -5,7 +5,7 @@ use crate::state::Config;
 
 
 #[derive(Accounts)]
-#[instruction(seed: u8)]
+#[instruction(seed: u64)]
 pub struct Initialize<'info> {
     #[account(mut)] // needed because balance would be deducted from the account
     pub admin: Signer<'info>,
@@ -32,7 +32,7 @@ pub struct Initialize<'info> {
 
 
 impl<'info> Initialize<'info> {
-    pub fn init(&mut self, seed: u8, max_amount: u64, max_duration: u64, bumps: &InitializeBumps) -> Result<()> {
+    pub fn init(&mut self, seed: u64, max_amount: u64, max_duration: u64, bumps: &InitializeBumps) -> Result<()> {
         let fee = self.calculate_fee(max_amount, max_duration);
 
         self.config.set_inner( Config {

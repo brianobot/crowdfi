@@ -9,5 +9,5 @@ pub struct Config {
     pub fee: u16, // the fee to be charged for campaigns under this config
     pub reward_mint: Pubkey,
     pub bump: u8,
-    pub seed: u8,
+    pub seed: u64,
 }
