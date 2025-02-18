@@ -4,9 +4,6 @@ import { Crowdfi } from "../target/types/crowdfi";
 import { Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from "@solana/web3.js";
 import { confirmTransaction } from "@solana-developers/helpers";
 import { randomBytes } from 'node:crypto';
-import { Key } from "node:readline";
-
-
 
 describe("crowdfi", () => {
   // Configure the client to use the local cluster.
@@ -71,7 +68,7 @@ describe("crowdfi", () => {
   
   it("Campaign is Created!", async () => {
     let balance = await getBalance(connection, campaignerCreator.publicKey);
-    console.log("💵💵💵 Campaign Creator Balance: ", balance);
+    console.log("💵💵💵 Campaign Creator Balance: ", balance / LAMPORTS_PER_SOL);
 
     const tx = await program.methods
       .createCampaign(
@@ -86,6 +83,7 @@ describe("crowdfi", () => {
         config: config,
         campaign: campaign,
         campaignVault: campaignVault,
+        systemProgram: SystemProgram.programId,
       })
       .signers([campaignerCreator])
       .rpc();
@@ -114,5 +112,7 @@ async function airdrop(connection, address: PublicKey, amount: number) {
 async function getBalance(connection: anchor.web3.Connection, address: PublicKey) {
   let accountInfo = await connection.getAccountInfo(address);
 
+  console.log("System Program Id: ",  SystemProgram.programId);
+  console.log("🏠🏠🏠🏠 Owner: ", accountInfo.owner);
   return accountInfo.lamports;
 }
