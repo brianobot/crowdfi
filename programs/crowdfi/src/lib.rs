@@ -11,7 +11,7 @@ pub use errors::*;
 pub use state::*;
 
 
-declare_id!("93n2M4grhmZap3gLJUc2gxuD3fNu7YDybi6fFwKsTKSz");
+declare_id!("62hgGBySaNh6mTqBN5rRLMDRxJ4T1wfcZL2X3quWij6R");
 
 #[program]
 pub mod crowdfi {
@@ -22,8 +22,13 @@ pub mod crowdfi {
         Ok(())
     }
 
-    pub fn create_campaign(ctx: Context<CreateCampaign>, title: String, description: String, url: String, target_amount: u64, start_timestamp: u64, end_timestamp: u64) -> Result<()> {
-        ctx.accounts.init(title, description, url, target_amount, start_timestamp, end_timestamp, &ctx.bumps)?;
+    // pub fn create_campaign(ctx: Context<CreateCampaign>, title: String, description: String, url: String, target_amount: u64, start_timestamp: u64, end_timestamp: u64) -> Result<()> {
+    //     ctx.accounts.init_campaign(title, description, url, target_amount, start_timestamp, end_timestamp, &ctx.bumps)?;
+    //     Ok(())
+    // }
+    
+    pub fn create_campaign_v2(ctx: Context<CreateCampaignV2>) -> Result<()> {
+        ctx.accounts.init_campaign()?;
         Ok(())
     }
 

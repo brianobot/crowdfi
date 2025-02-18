@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use anchor_lang::prelude::*;
 // use anchor_spl::token_interface::{Mint, TokenInterface};
 // use anchor_spl::metadata::{MetadataAccount, Metadata};
@@ -17,33 +19,31 @@ use crate::state::{Campaign, Config};
 pub struct CreateCampaign<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
-    #[account(
-        seeds = [
-            b"config", 
-            config.admin.as_ref(), 
-            config.seed.to_le_bytes().as_ref()
-        ],
-        bump = config.bump
-    )]
-    pub config: Account<'info, Config>,
+    // #[account(
+    //     seeds = [
+    //         b"config", 
+    //         config.admin.as_ref(), 
+    //         config.seed.to_le_bytes().as_ref()
+    //     ],
+    //     bump = config.bump
+    // )]
+    // pub config: Account<'info, Config>,
     #[account(
         init,
         payer = user,
         // this way each account takes just the exact amount of space needed to store it data
-        space = ANCHOR_DISCRIMINATOR + Campaign::INIT_SPACE + title.len() + description.len() + url.len(),
-        seeds = [b"campaign", user.key().as_ref(), title.as_bytes()],
+        space = ANCHOR_DISCRIMINATOR + 8, //Campaign::INIT_SPACE + title.len() + description.len() + url.len(),
+        seeds = [b"campaign"], //, user.key().as_ref(), title.as_bytes()],
         bump,
     )]
     pub campaign: Account<'info, Campaign>,
-    #[account(
-        init,
-        payer = user,
-        space = ANCHOR_DISCRIMINATOR,
-        seeds = [b"campaign_vault", campaign.key().as_ref()],
-        bump,
-    )]
-    /// CHECK: THis is safe
-    pub campaign_vault: AccountInfo<'info>,
+    // #[account(
+    //     mut,
+    //     seeds = [b"campaign_vault", campaign.key().as_ref()],
+    //     bump,
+    // )]
+    // // this would still be owned by my program
+    // pub campaign_vault: SystemAccount<'info>,
     // Create a Token that would represent Participation in this Campaign
     // #[account(
     //     init,
@@ -74,59 +74,61 @@ impl<'info> CreateCampaign<'info> {
     // Initialize the campaign reward mint
     // Initialize the campaign reward mint Metadata
 
-    pub fn init(
+    pub fn init_campaign(
         &mut self,
-        title: String,
-        description: String,
-        url: String,
-        target_amount: u64,
-        start_timestamp: u64,
-        end_timestamp: u64,
-        bumps: &CreateCampaignBumps,
+        _title: String,
+        _description: String,
+        _url: String,
+        _target_amount: u64,
+        _start_timestamp: u64,
+        _end_timestamp: u64,
+        _bumps: &CreateCampaignBumps,
     ) -> Result<()> {
-        require!(
-            url.len() <= MAX_CAMPAIGN_URL,
-            CrowdfiError::CAMPAIGNURLTOOLONG
-        );
-        require!(
-            title.len() <= MAX_CAMPAIGN_TITLE,
-            CrowdfiError::CAMPAIGNTITLETOOLONG
-        );
-        require!(
-            description.len() <= MAX_CAMPAIGN_DESCR,
-            CrowdfiError::CAMPAIGNDESCRTOOLONG
-        );
+        msg!("🔥🔥🔥🔥 Instruction Started");
 
-        let config = &mut self.config;
-        // this is allowed because the config is not reassignable but the data it references can be changed through it
+        // require!(
+        //     url.len() <= MAX_CAMPAIGN_URL,
+        //     CrowdfiError::CAMPAIGNURLTOOLONG
+        // );
+        // require!(
+        //     title.len() <= MAX_CAMPAIGN_TITLE,
+        //     CrowdfiError::CAMPAIGNTITLETOOLONG
+        // );
+        // require!(
+        //     description.len() <= MAX_CAMPAIGN_DESCR,
+        //     CrowdfiError::CAMPAIGNDESCRTOOLONG
+        // );
 
-        let campaign_duration = end_timestamp - start_timestamp;
+        // let config = &mut self.config;
+        // // this is allowed because the config is not reassignable but the data it references can be changed through it
+
+        // let campaign_duration = end_timestamp - start_timestamp;
         // add check that the start date is not in the past
         // add check that the end date is greater than the start date
-        require!(
-            target_amount <= config.max_amount,
-            CrowdfiError::CAMPAIGNMAXAMOUNTEXCEEDED
-        );
-        require!(
-            campaign_duration <= config.max_duration,
-            CrowdfiError::CAMPAIGNDURATIONTOOLONG
-        );
+        // require!(
+        //     target_amount <= config.max_amount,
+        //     CrowdfiError::CAMPAIGNMAXAMOUNTEXCEEDED
+        // );
+        // require!(
+        //     campaign_duration <= config.max_duration,
+        //     CrowdfiError::CAMPAIGNDURATIONTOOLONG
+        // );
 
         // INITIALIZE THE CAMPAIGN ACCOUNT
-        self.campaign.set_inner(Campaign {
-            authority: self.user.key(),
-            title,
-            description,
-            url,
-            start_timestamp,
-            end_timestamp,
-            target_amount,
-            current_amount: 0,
-            bump: bumps.campaign,
-            vault_bump: bumps.campaign_vault,
-            // TODO: Change this to the reward mint bump
-            reward_mint_bump: bumps.campaign_vault,
-        });
+        // self.campaign.set_inner(Campaign {
+        //     authority: self.user.key(),
+        //     title,
+        //     description,
+        //     url,
+        //     start_timestamp,
+        //     end_timestamp,
+        //     target_amount,
+        //     current_amount: 0,
+        //     bump: bumps.campaign,
+        //     vault_bump: bumps.campaign_vault,
+        //     // TODO: Change this to the reward mint bump
+        //     reward_mint_bump: bumps.campaign_vault,
+        // });
 
         // INITIALIZE THE CAMPAING VAULT ACCOUNT
 

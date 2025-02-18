@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-crowdfi = "93n2M4grhmZap3gLJUc2gxuD3fNu7YDybi6fFwKsTKSz"
+crowdfi = "62hgGBySaNh6mTqBN5rRLMDRxJ4T1wfcZL2X3quWij6R"
 
 [registry]
 url = "https://api.apr.dev"
